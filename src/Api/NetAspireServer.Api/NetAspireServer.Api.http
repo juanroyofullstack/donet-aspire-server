@@ -1,6 +1,0 @@
-@NetAspireServer.Api_HostAddress = http://localhost:5242
-
-GET {{NetAspireServer.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

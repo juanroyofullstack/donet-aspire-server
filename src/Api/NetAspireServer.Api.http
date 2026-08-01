@@ -1,0 +1,11 @@
+GET https://localhost:5001/products
+
+###
+
+POST https://localhost:5001/products
+Content-Type: application/json
+
+{
+  "name": "Widget",
+  "price": 9.99
+}
