@@ -8,4 +8,8 @@
     <UserSecretsId>a1245c44-9e3d-4213-870c-21e6bc8e7547</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../Api/NetAspireServer.Api.csproj" />
+  </ItemGroup>
+
 </Project>

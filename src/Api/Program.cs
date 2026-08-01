@@ -1,11 +1,22 @@
+using Microsoft.Extensions.Options;
 using NetAspireServer.Application.Interfaces;
 using NetAspireServer.Application.Services;
+using NetAspireServer.Infrastructure.Configuration;
 using NetAspireServer.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
-builder.Services.AddSingleton<IProductRepository, InMemoryProductRepository>();
+
+builder.Services.Configure<CosmosDbOptions>(builder.Configuration.GetSection("CosmosDb"));
+builder.Services.AddSingleton<IProductRepository>(sp =>
+{
+    var options = sp.GetRequiredService<IOptions<CosmosDbOptions>>().Value;
+
+    return options.IsConfigured
+        ? new CosmosProductRepository(options)
+        : new InMemoryProductRepository();
+});
 builder.Services.AddSingleton<ProductService>();
 
 var app = builder.Build();
@@ -14,6 +25,9 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.MapGet("/", () => Results.Ok(new { status = "ok", message = "NetAspireServer API is running." }));
+app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 
 app.MapGet("/products", async (ProductService service) =>
 {
@@ -30,3 +44,4 @@ app.MapPost("/products", async (CreateProductRequest request, ProductService ser
 app.Run();
 
 public sealed record CreateProductRequest(string Name, decimal Price);
+

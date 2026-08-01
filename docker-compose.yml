@@ -1,0 +1,13 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: src/Api/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://0.0.0.0:8080
+      CosmosDb__ConnectionString: ""
+      CosmosDb__DatabaseName: "productsdb"
+      CosmosDb__ContainerName: "products"
