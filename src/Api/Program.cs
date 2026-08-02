@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using Microsoft.Azure.Cosmos;
 using NetAspireServer.Application.Interfaces;
 using NetAspireServer.Application.Services;
 using NetAspireServer.Infrastructure.Configuration;
@@ -8,13 +9,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 
+if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("cosmos")))
+{
+    builder.AddAzureCosmosClient("cosmos");
+}
+
 builder.Services.Configure<CosmosDbOptions>(builder.Configuration.GetSection("CosmosDb"));
 builder.Services.AddSingleton<IProductRepository>(sp =>
 {
     var options = sp.GetRequiredService<IOptions<CosmosDbOptions>>().Value;
+    var cosmosClient = sp.GetService<CosmosClient>();
 
-    return options.IsConfigured
-        ? new CosmosProductRepository(options)
+    return options.IsConfigured && cosmosClient is not null
+        ? new CosmosProductRepository(cosmosClient, options)
         : new InMemoryProductRepository();
 });
 builder.Services.AddSingleton<ProductService>();

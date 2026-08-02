@@ -17,7 +17,6 @@ public class CosmosDbOptionsTests
     {
         var options = new CosmosDbOptions
         {
-            ConnectionString = "AccountEndpoint=https://example.documents.azure.com:443/;AccountKey=test-key;",
             DatabaseName = "netaspire",
             ContainerName = "products"
         };

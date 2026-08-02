@@ -11,15 +11,17 @@ public sealed class CosmosProductRepository : IProductRepository
     private readonly CosmosClient _client;
     private Container? _container;
 
-    public CosmosProductRepository(CosmosDbOptions options)
+    public CosmosProductRepository(CosmosClient client, CosmosDbOptions options)
     {
+        ArgumentNullException.ThrowIfNull(client);
+
         if (!options.IsConfigured)
         {
-            throw new InvalidOperationException("Cosmos DB is not configured. Please provide connection string, database name, and container name.");
+            throw new InvalidOperationException("Cosmos DB is not configured. Please provide database name and container name.");
         }
 
+        _client = client;
         _options = options;
-        _client = new CosmosClient(options.ConnectionString);
     }
 
     public async Task<Product> AddAsync(Product product, CancellationToken cancellationToken = default)

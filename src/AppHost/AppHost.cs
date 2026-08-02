@@ -7,6 +7,13 @@ builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
     ["ASPIRE_ALLOW_UNSECURED_TRANSPORT"] = "true"
 });
 
-builder.AddProject<Projects.NetAspireServer_Api>("api");
+var cosmos = builder.AddAzureCosmosDB("cosmos")
+    .RunAsEmulator(emulator => emulator.WithContainerRuntimeArgs("--platform", "linux/amd64"));
+
+cosmos.AddCosmosDatabase("productsdb")
+    .AddContainer("products", "/id");
+
+builder.AddProject<Projects.NetAspireServer_Api>("api")
+    .WithReference(cosmos);
 
 builder.Build().Run();

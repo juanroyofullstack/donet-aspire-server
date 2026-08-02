@@ -1,6 +1,6 @@
 # Architecture
 
-This repository uses a clean, layered .NET structure with a small API surface and the business logic kept outside the web layer. The goal is to keep the API thin, the domain rules explicit, and persistence swappable between Cosmos DB and an in-memory fallback.
+This repository uses a clean, layered .NET structure with a small API surface and the business logic kept outside the web layer. The goal is to keep the API thin, the domain rules explicit, and persistence swappable between an Aspire-orchestrated Cosmos DB setup and an in-memory fallback.
 
 ## Solution Layers
 
@@ -29,6 +29,8 @@ The runtime flow for `GET /products` and `POST /products` is:
 4. `ProductService` delegates persistence to `IProductRepository`.
 5. The container resolves either the Cosmos-backed repository or the in-memory repository.
 
+When the app is started through Aspire, AppHost also provides the Cosmos connection to the API through a resource reference named `cosmos`.
+
 ## Application Layer
 
 The `Application` project defines the use-case boundary for products.
@@ -51,20 +53,20 @@ Those rules are enforced before any persistence logic runs, so invalid products 
 
 The `Infrastructure` project provides the concrete repository implementations and configuration binding.
 
-- `CosmosDbOptions` binds the `CosmosDb` configuration section and exposes `IsConfigured`.
-- `CosmosProductRepository` uses `Microsoft.Azure.Cosmos` to store and read products.
+- `CosmosDbOptions` binds the `CosmosDb` configuration section and exposes whether the remaining Cosmos names are present.
+- `CosmosProductRepository` uses `Microsoft.Azure.Cosmos` to store and read products, but now receives `CosmosClient` from dependency injection instead of creating its own client.
 - `InMemoryProductRepository` stores products in a local list for development or when Cosmos is not configured.
 
-The API selects the repository implementation at startup based on `CosmosDbOptions.IsConfigured`.
+The API selects the repository implementation at startup based on both `CosmosDbOptions.IsConfigured` and whether a `CosmosClient` has been registered.
 
 ### Repository Selection
 
 The registration in `Program.cs` resolves `IProductRepository` with this rule:
 
-- If `CosmosDbOptions.IsConfigured` is `true`, the app uses `CosmosProductRepository`.
+- If `CosmosDbOptions.IsConfigured` is `true` and the AppHost-provided `CosmosClient` is available, the app uses `CosmosProductRepository`.
 - Otherwise, the app falls back to `InMemoryProductRepository`.
 
-This makes local development work without Cosmos DB configuration while still supporting a real database when the required settings are present.
+This keeps the API runnable outside Aspire while still allowing AppHost to inject real infrastructure when it is available.
 
 ### Cosmos Repository Behavior
 
@@ -73,6 +75,7 @@ This makes local development work without Cosmos DB configuration while still su
 Important details:
 
 - The container is created with `/id` as the partition key path.
+- The repository uses the DI-provided `CosmosClient`, which is registered by the API when the `cosmos` connection string is supplied through Aspire.
 - Products are stored as an internal document shape and mapped back into domain entities on read.
 - `GetAllAsync` queries all items from the container and materializes them as `Product` instances.
 
@@ -81,18 +84,21 @@ Important details:
 The Aspire AppHost lives in `src/AppHost/AppHost.cs` and acts as the orchestration entry point for the distributed application.
 
 - It adds `ASPIRE_ALLOW_UNSECURED_TRANSPORT = true` to configuration for local development.
-- It registers the API project so Aspire can start it.
+- It declares a Cosmos DB resource named `cosmos` and runs it as a local emulator.
+- It declares a `productsdb` database and a `products` container.
+- It registers the API project and links the Cosmos resource via `WithReference(cosmos)`.
 
-In practice, AppHost is the developer entry point for running the system as a small Aspire application, while the API project remains focused on HTTP behavior.
+In practice, AppHost is the developer entry point for running the system as a small Aspire application, while the API project remains focused on HTTP behavior and consumes infrastructure through configuration and DI.
 
 ## Configuration
 
 The API currently reads only a small amount of configuration:
 
 - Logging defaults from `appsettings.json` and `appsettings.Development.json`.
-- Cosmos DB settings from the `CosmosDb` configuration section when present.
+- Cosmos DB database and container naming from the `CosmosDb` configuration section when present.
+- A Cosmos connection string named `cosmos` when the API is started through Aspire.
 
-If the Cosmos settings are missing or incomplete, the application still starts and uses the in-memory repository.
+If the Cosmos names are missing or incomplete, or if the API is started without the Aspire-provided `cosmos` connection, the application still starts and uses the in-memory repository.
 
 ## Design Principles
 
@@ -103,3 +109,4 @@ The current codebase follows a few simple rules:
 - Hide persistence behind an interface.
 - Prefer a safe fallback for local development.
 - Keep Aspire orchestration separate from the API runtime.
+- Let AppHost own infrastructure connectivity and let the API consume it through DI.
