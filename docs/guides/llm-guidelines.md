@@ -19,12 +19,12 @@ Do not use it as a source of truth when the codebase already defines the behavio
 
 When working in this repo, the best context order is:
 
-1. [docs/index.md](index.md)
-2. [docs/architecture.md](architecture.md)
-3. [docs/configuration.md](configuration.md)
-4. [docs/api.md](api.md)
-5. [docs/domain.md](domain.md)
-6. [docs/llm-context.md](llm-context.md)
+1. [docs/index.md](../index.md)
+2. [docs/reference/architecture.md](../reference/architecture.md)
+3. [docs/reference/configuration.md](../reference/configuration.md)
+4. [docs/reference/api.md](../reference/api.md)
+5. [docs/reference/domain.md](../reference/domain.md)
+6. [docs/context/llm-context.md](../context/llm-context.md)
 
 That order keeps the model anchored in the system shape before it looks at details.
 

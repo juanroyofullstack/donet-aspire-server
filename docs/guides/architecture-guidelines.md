@@ -93,7 +93,7 @@ Do not:
 - Treat configuration as input to composition, not business logic.
 - Keep connection strings and environment-specific values out of code.
 - Use `IsConfigured`-style checks when the app has a safe fallback.
-- Document any new configuration section in `docs/configuration.md`.
+- Document any new configuration section in `docs/reference/configuration.md`.
 
 ## Testing Rules
 

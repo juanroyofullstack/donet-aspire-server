@@ -119,6 +119,6 @@ Relevant failures can still occur from the domain and infrastructure layers:
 
 ## Related Files
 
-- [../src/Api/Program.cs](../src/Api/Program.cs)
+- [src/Api/Program.cs](../../src/Api/Program.cs)
 - [architecture.md](architecture.md)
 - [configuration.md](configuration.md)

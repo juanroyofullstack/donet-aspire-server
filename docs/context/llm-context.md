@@ -13,9 +13,9 @@ The system supports two persistence modes:
 
 ## Main Entry Points
 
-- [src/Api/Program.cs](../src/Api/Program.cs): API bootstrap, dependency injection, and endpoint mapping.
-- [src/AppHost/AppHost.cs](../src/AppHost/AppHost.cs): Aspire orchestration host.
-- [docs/architecture.md](architecture.md): full architecture reference.
+- [src/Api/Program.cs](../../src/Api/Program.cs): API bootstrap, dependency injection, and endpoint mapping.
+- [src/AppHost/AppHost.cs](../../src/AppHost/AppHost.cs): Aspire orchestration host.
+- [docs/reference/architecture.md](../reference/architecture.md): full architecture reference.
 
 ## Layer Map
 
@@ -110,10 +110,10 @@ When these values are complete, the Cosmos repository is used. If not, the app f
 
 ## Useful File References
 
-- [src/Api/Program.cs](../src/Api/Program.cs)
-- [src/Application/Services/ProductService.cs](../src/Application/Services/ProductService.cs)
-- [src/Application/Interfaces/IProductRepository.cs](../src/Application/Interfaces/IProductRepository.cs)
-- [src/Domain/Entities/Product.cs](../src/Domain/Entities/Product.cs)
-- [src/Infrastructure/Repositories/CosmosProductRepository.cs](../src/Infrastructure/Repositories/CosmosProductRepository.cs)
-- [src/Infrastructure/Repositories/InMemoryProductRepository.cs](../src/Infrastructure/Repositories/InMemoryProductRepository.cs)
-- [src/Infrastructure/Configuration/CosmosDbOptions.cs](../src/Infrastructure/Configuration/CosmosDbOptions.cs)
+- [src/Api/Program.cs](../../src/Api/Program.cs)
+- [src/Application/Services/ProductService.cs](../../src/Application/Services/ProductService.cs)
+- [src/Application/Interfaces/IProductRepository.cs](../../src/Application/Interfaces/IProductRepository.cs)
+- [src/Domain/Entities/Product.cs](../../src/Domain/Entities/Product.cs)
+- [src/Infrastructure/Repositories/CosmosProductRepository.cs](../../src/Infrastructure/Repositories/CosmosProductRepository.cs)
+- [src/Infrastructure/Repositories/InMemoryProductRepository.cs](../../src/Infrastructure/Repositories/InMemoryProductRepository.cs)
+- [src/Infrastructure/Configuration/CosmosDbOptions.cs](../../src/Infrastructure/Configuration/CosmosDbOptions.cs)
