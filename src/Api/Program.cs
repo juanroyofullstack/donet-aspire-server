@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Options;
 using Microsoft.Azure.Cosmos;
-using NetAspireServer.Api.Contracts.Products;
+using NetAspireServer.Api.Endpoints;
 using NetAspireServer.Application.Interfaces;
 using NetAspireServer.Application.Services;
 using NetAspireServer.Infrastructure.Configuration;
@@ -37,17 +37,7 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/", () => Results.Ok(new { status = "ok", message = "NetAspireServer API is running." }));
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 
-app.MapGet("/products", async (ProductService service) =>
-{
-    var products = await service.GetAllAsync();
-    return Results.Ok(products);
-});
-
-app.MapPost("/products", async (CreateProductRequest request, ProductService service) =>
-{
-    var product = await service.CreateAsync(request.Name, request.Price);
-    return Results.Created($"/products/{product.Id}", product);
-});
+app.MapProductEndpoints();
 
 app.Run();
 
