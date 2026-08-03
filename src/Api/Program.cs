@@ -34,9 +34,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.MapGet("/", () => Results.Ok(new { status = "ok", message = "NetAspireServer API is running." }));
-app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
-
+app.MapSystemEndpoints();
 app.MapProductEndpoints();
 
 app.Run();
