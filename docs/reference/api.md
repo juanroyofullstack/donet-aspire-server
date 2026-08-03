@@ -4,7 +4,7 @@ This document describes the current HTTP surface exposed by the API project.
 
 ## Overview
 
-The API is implemented as a Minimal API in `src/Api/Program.cs`. It exposes a small set of endpoints for health checks and product management.
+The API is implemented as a Minimal API with a composition-root entry point in `src/Api/Program.cs` and endpoint mappings split by vertical in `src/Api/Endpoints/`.
 
 The product endpoints delegate to `ProductService`, which in turn uses the repository abstraction selected at startup.
 
@@ -12,10 +12,17 @@ For architectural context, see [architecture.md](architecture.md).
 
 ## Base Behavior
 
-- The API maps a root status endpoint.
-- Health checks are exposed at `/health`.
-- Product data is available through `/products`.
+- System endpoints are mapped through `MapSystemEndpoints()`.
+- Product endpoints are mapped through `MapProductEndpoints()`.
+- Product payloads use explicit API contracts: `CreateProductRequest` and `ProductResponse`.
 - OpenAPI is enabled in development mode.
+
+## Endpoint Organization
+
+- `src/Api/Program.cs` registers services and invokes endpoint mapping extension methods.
+- `src/Api/Endpoints/SystemEndpoints.cs` contains `GET /` and `GET /health`.
+- `src/Api/Endpoints/ProductEndpoints.cs` contains `GET /products` and `POST /products`.
+- Product endpoints include OpenAPI metadata (`WithName`, `WithTags`, `WithSummary`, `WithDescription`, `Produces`).
 
 ## Endpoints
 
@@ -50,8 +57,9 @@ Returns all products currently stored by the active repository implementation.
 
 Behavior:
 
-- Uses `ProductService.GetAllAsync()`.
-- Returns the collection as JSON.
+- Uses `ProductService.GetAllAsync(cancellationToken)`.
+- Maps domain entities to `ProductResponse`.
+- Returns `200 OK`.
 
 Example response:
 
@@ -86,8 +94,9 @@ Request model:
 Behavior:
 
 - The endpoint binds the request to `CreateProductRequest`.
-- `ProductService.CreateAsync(name, price)` creates the domain entity.
+- `ProductService.CreateAsync(name, price, cancellationToken)` creates the domain entity.
 - The repository persists the entity.
+- The response payload is `ProductResponse`.
 - The response is `201 Created`.
 - The `Location` header points to `/products/{id}`.
 
@@ -120,5 +129,9 @@ Relevant failures can still occur from the domain and infrastructure layers:
 ## Related Files
 
 - [src/Api/Program.cs](../../src/Api/Program.cs)
+- [src/Api/Endpoints/SystemEndpoints.cs](../../src/Api/Endpoints/SystemEndpoints.cs)
+- [src/Api/Endpoints/ProductEndpoints.cs](../../src/Api/Endpoints/ProductEndpoints.cs)
+- [src/Api/Contracts/Products/CreateProductRequest.cs](../../src/Api/Contracts/Products/CreateProductRequest.cs)
+- [src/Api/Contracts/Products/ProductResponse.cs](../../src/Api/Contracts/Products/ProductResponse.cs)
 - [architecture.md](architecture.md)
 - [configuration.md](configuration.md)

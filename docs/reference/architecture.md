@@ -19,15 +19,16 @@ The entry point is `src/Api/Program.cs`. It does three jobs:
 
 1. Registers services in the container.
 2. Builds the web application.
-3. Maps the HTTP endpoints.
+3. Invokes HTTP endpoint mapping extension methods.
 
 The runtime flow for `GET /products` and `POST /products` is:
 
-1. The endpoint in `Program.cs` receives the request.
-2. The endpoint calls `ProductService` from the `Application` layer.
-3. `ProductService` creates or retrieves `Product` entities.
-4. `ProductService` delegates persistence to `IProductRepository`.
-5. The container resolves either the Cosmos-backed repository or the in-memory repository.
+1. `Program.cs` invokes `MapProductEndpoints()` from `src/Api/Endpoints/ProductEndpoints.cs`.
+2. The endpoint handler in `ProductEndpoints` receives the request.
+3. The endpoint calls `ProductService` from the `Application` layer.
+4. `ProductService` creates or retrieves `Product` entities.
+5. `ProductService` delegates persistence to `IProductRepository`.
+6. The container resolves either the Cosmos-backed repository or the in-memory repository.
 
 When the app is started through Aspire, AppHost also provides the Cosmos connection to the API through a resource reference named `cosmos`.
 
@@ -105,6 +106,7 @@ If the Cosmos names are missing or incomplete, or if the API is started without 
 The current codebase follows a few simple rules:
 
 - Keep `Program.cs` small and focused on composition.
+- Organize endpoints by vertical in `src/Api/Endpoints` (for example `SystemEndpoints` and `ProductEndpoints`).
 - Put business rules in the domain entity, not in the endpoint.
 - Hide persistence behind an interface.
 - Prefer a safe fallback for local development.
