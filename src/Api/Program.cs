@@ -9,6 +9,8 @@ using NetAspireServer.Infrastructure.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("cosmos")))
 {
@@ -32,6 +34,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.MapSystemEndpoints();
