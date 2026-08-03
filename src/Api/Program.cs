@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using Microsoft.Azure.Cosmos;
+using NetAspireServer.Api.Contracts.Products;
 using NetAspireServer.Application.Interfaces;
 using NetAspireServer.Application.Services;
 using NetAspireServer.Infrastructure.Configuration;
@@ -49,6 +50,4 @@ app.MapPost("/products", async (CreateProductRequest request, ProductService ser
 });
 
 app.Run();
-
-public sealed record CreateProductRequest(string Name, decimal Price);
 
