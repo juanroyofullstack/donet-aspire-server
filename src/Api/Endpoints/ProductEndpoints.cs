@@ -6,10 +6,19 @@ namespace NetAspireServer.Api.Endpoints;
 
 public static class ProductEndpoints
 {
+    private const string ProductsRoute = "/products";
+    private const string ProductsTag = "Products";
+    private const string GetProductsOperationName = "GetProducts";
+    private const string GetProductsSummary = "Gets all products";
+    private const string GetProductsDescription = "Returns all products currently stored by the active repository implementation.";
+    private const string CreateProductOperationName = "CreateProduct";
+    private const string CreateProductSummary = "Creates a new product";
+    private const string CreateProductDescription = "Creates a new product and returns the created resource.";
+
     public static void MapProductEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/products")
-            .WithTags("Products");
+        var group = app.MapGroup(ProductsRoute)
+            .WithTags(ProductsTag);
 
         group.MapGet(string.Empty, async (ProductService service, CancellationToken cancellationToken) =>
             {
@@ -17,20 +26,20 @@ public static class ProductEndpoints
                 var response = products.Select(MapToResponse).ToArray();
                 return TypedResults.Ok(response);
             })
-            .WithName("GetProducts")
-            .WithSummary("Gets all products")
-            .WithDescription("Returns all products currently stored by the active repository implementation.")
+            .WithName(GetProductsOperationName)
+            .WithSummary(GetProductsSummary)
+            .WithDescription(GetProductsDescription)
             .Produces<ProductResponse[]>(StatusCodes.Status200OK);
 
         group.MapPost(string.Empty, async (CreateProductRequest request, ProductService service, CancellationToken cancellationToken) =>
             {
                 var product = await service.CreateAsync(request.Name, request.Price, cancellationToken);
                 var response = MapToResponse(product);
-                return TypedResults.Created($"/products/{response.Id}", response);
+                return TypedResults.Created($"{ProductsRoute}/{response.Id}", response);
             })
-            .WithName("CreateProduct")
-            .WithSummary("Creates a new product")
-            .WithDescription("Creates a new product and returns the created resource.")
+            .WithName(CreateProductOperationName)
+            .WithSummary(CreateProductSummary)
+            .WithDescription(CreateProductDescription)
             .Produces<ProductResponse>(StatusCodes.Status201Created);
     }
 
