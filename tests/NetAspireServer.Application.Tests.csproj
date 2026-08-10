@@ -15,9 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\\..\\src\\Application\\NetAspireServer.Application.csproj" />
-    <ProjectReference Include="..\\..\\src\\Domain\\NetAspireServer.Domain.csproj" />
-    <ProjectReference Include="..\\..\\src\\Infrastructure\\NetAspireServer.Infrastructure.csproj" />
+    <ProjectReference Include="..\\src\\Application\\NetAspireServer.Application.csproj" />
+    <ProjectReference Include="..\\src\\Domain\\NetAspireServer.Domain.csproj" />
+    <ProjectReference Include="..\\src\\Infrastructure\\NetAspireServer.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
