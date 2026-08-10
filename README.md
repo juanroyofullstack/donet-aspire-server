@@ -1,33 +1,33 @@
 # Net Aspire Server
 
-Este proyecto muestra una arquitectura limpia con .NET, Aspire, Cosmos DB y Docker.
+This project demonstrates a clean architecture setup using .NET, Aspire, Cosmos DB, and Docker.
 
-## Requisitos
+## Requirements
 
 - .NET 10 SDK
 - Docker Desktop
 
-## Ejecutar la API localmente
+## Run the API locally
 
 ```bash
 dotnet build
- dotnet run --project src/Api/NetAspireServer.Api.csproj
+dotnet run --project src/Api/NetAspireServer.Api.csproj
 ```
 
-## Ejecutar con Docker
+## Run with Docker
 
 ```bash
 docker compose up --build
 ```
 
-La API quedará disponible en:
+The API will be available at:
 
 - http://localhost:8080/
 - http://localhost:8080/health
 
-## Ejemplo de uso
+## Example usage
 
-### Crear un producto
+### Create a product
 
 ```bash
 curl -X POST http://localhost:8080/products \
@@ -35,7 +35,7 @@ curl -X POST http://localhost:8080/products \
   -d '{"name":"Laptop","price":999.99}'
 ```
 
-### Listar productos
+### List products
 
 ```bash
 curl http://localhost:8080/products
