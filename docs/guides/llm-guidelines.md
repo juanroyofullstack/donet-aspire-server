@@ -56,6 +56,8 @@ Better prompts mention the exact endpoint, service, or entity involved.
 - Ask for a plan before changing multiple layers.
 - Keep edits small and reviewable.
 - Validate changes against the existing docs and code.
+- Keep test coverage above 90% whenever possible.
+- When you need to run tests and coverage, use the repository prompt in [.github/prompts/run-tests-and-coverage.prompt.md](../../.github/prompts/run-tests-and-coverage.prompt.md).
 
 ## Things the LLM Should Not Do
 

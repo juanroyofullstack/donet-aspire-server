@@ -46,6 +46,8 @@ This repository is a .NET Aspire solution with a Minimal API, layered applicatio
 - After code changes, validate with the narrowest useful check available.
 - Prefer focused tests or targeted error checks for the touched area.
 - Do not expand scope to unrelated code while fixing a local issue.
+- Keep overall test coverage above 90% whenever possible.
+- For test and coverage runs, use the reusable prompt in [.github/prompts/run-tests-and-coverage.prompt.md](.github/prompts/run-tests-and-coverage.prompt.md) when appropriate.
 
 ## When Editing This Repo
 
