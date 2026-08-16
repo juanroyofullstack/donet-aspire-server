@@ -18,13 +18,23 @@ if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("cosmos
 }
 
 builder.Services.Configure<CosmosDbOptions>(builder.Configuration.GetSection("CosmosDb"));
-builder.Services.AddSingleton<IProductRepository>(sp =>
+builder.Services.AddSingleton<ICosmosProductDataStore>(sp =>
 {
     var options = sp.GetRequiredService<IOptions<CosmosDbOptions>>().Value;
     var cosmosClient = sp.GetService<CosmosClient>();
 
     return options.IsConfigured && cosmosClient is not null
-        ? new CosmosProductRepository(cosmosClient, options)
+        ? new CosmosProductDataStore(cosmosClient, options)
+        : new InMemoryProductDataStore();
+});
+
+builder.Services.AddSingleton<IProductRepository>(sp =>
+{
+    var options = sp.GetRequiredService<IOptions<CosmosDbOptions>>().Value;
+    var dataStore = sp.GetRequiredService<ICosmosProductDataStore>();
+
+    return options.IsConfigured && sp.GetService<CosmosClient>() is not null
+        ? new CosmosProductRepository(dataStore, options)
         : new InMemoryProductRepository();
 });
 builder.Services.AddSingleton<ProductService>();
