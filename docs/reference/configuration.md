@@ -84,6 +84,18 @@ The configuration model currently leads to three practical runtime outcomes:
 2. The API runs without Aspire or without the `CosmosDb` names, so it falls back to `InMemoryProductRepository`.
 3. Aspire runs the app locally with unsecured transport enabled and starts the Cosmos emulator alongside the API.
 
+## Integration Test Environment
+
+The repository includes a dedicated integration test project for the real Cosmos flow. It expects the local Azure Cosmos emulator to be running on `https://localhost:8081`.
+
+To start it locally:
+
+```bash
+docker compose up -d cosmos
+```
+
+The integration test checks for port 8081 before trying to connect. If Docker is unavailable or the emulator is not running, the test is skipped rather than failing the unit suite.
+
 ## Operational Notes
 
 - Keep secrets out of source-controlled `appsettings` files.
