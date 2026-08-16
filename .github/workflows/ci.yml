@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build-and-test:
+  unit-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,14 +25,16 @@ jobs:
       - name: Build solution
         run: dotnet build NetAspireServer.sln --configuration Release --no-restore
 
-      - name: Run tests with coverage
+      - name: Run unit tests with coverage
         run: |
+          rm -rf TestResults
           mkdir -p TestResults
           dotnet test tests/NetAspireServer.Application.Tests.csproj \
             --configuration Release \
             --no-build \
             --collect:"XPlat Code Coverage" \
-            --results-directory TestResults
+            --results-directory TestResults \
+            --settings coverlet.runsettings
 
       - name: Enforce minimum coverage
         run: |
@@ -63,8 +65,32 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: unit-test-results
           path: |
             TestResults
             tests/bin
             tests/obj
+
+  integration-tests:
+    runs-on: ubuntu-latest
+    needs: unit-tests
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Start Cosmos emulator
+        run: docker compose up -d cosmos
+
+      - name: Run integration tests
+        run: |
+          dotnet restore NetAspireServer.sln
+          dotnet test tests/NetAspireServer.IntegrationTests.csproj \
+            --configuration Release \
+            --no-restore \
+            --logger "console;verbosity=minimal"

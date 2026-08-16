@@ -5,6 +5,9 @@
       <DataCollector friendlyName="XPlat code coverage">
         <Configuration>
           <ExcludeByFile>
+            **/tests/**/*.cs,
+            **/src/Api/**/*.cs,
+            **/src/AppHost/**/*.cs,
             **/src/Infrastructure/Repositories/CosmosProductDataStore.cs,
             **/src/Infrastructure/Repositories/ICosmosProductDataStore.cs
           </ExcludeByFile>
