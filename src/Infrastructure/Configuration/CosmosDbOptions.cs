@@ -4,6 +4,7 @@ public sealed class CosmosDbOptions
 {
     public string? DatabaseName { get; set; }
     public string? ContainerName { get; set; }
+    public bool AcceptUntrustedEmulatorCertificate { get; set; }
 
     public bool IsConfigured =>
         !string.IsNullOrWhiteSpace(DatabaseName) &&

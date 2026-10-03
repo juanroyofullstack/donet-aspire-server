@@ -38,4 +38,13 @@ public sealed class CosmosProductRepository : IProductRepository
             .Select(item => new Product(item.Id, item.Name, item.Price))
             .ToList();
     }
+
+    public async Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var document = await _dataStore.GetByIdAsync(id, cancellationToken);
+
+        return document is null
+            ? null
+            : new Product(document.Id, document.Name, document.Price);
+    }
 }

@@ -25,6 +25,11 @@ public class CosmosProductRepositoryTests
             return Task.FromResult(document);
         }
 
+        public Task<CosmosProductDocument?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(_documents.SingleOrDefault(document => document.Id == id));
+        }
+
         public Task<IReadOnlyList<CosmosProductDocument>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             return Task.FromResult<IReadOnlyList<CosmosProductDocument>>(_documents.AsReadOnly());
@@ -89,5 +94,38 @@ public class CosmosProductRepositoryTests
         Assert.Equal(2, products.Count);
         Assert.Contains(products, product => product.Name == "Laptop");
         Assert.Contains(products, product => product.Name == "Mouse");
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_ShouldReturnMappedProduct_WhenDocumentExists()
+    {
+        var id = Guid.NewGuid();
+        var dataStore = new FakeCosmosProductDataStore();
+        await dataStore.UpsertAsync(new CosmosProductDocument(id, "Laptop", 1000m));
+        var repository = new CosmosProductRepository(dataStore, new CosmosDbOptions
+        {
+            DatabaseName = "netaspire",
+            ContainerName = "products"
+        });
+
+        var product = await repository.GetByIdAsync(id);
+
+        Assert.NotNull(product);
+        Assert.Equal(id, product.Id);
+        Assert.Equal("Laptop", product.Name);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_ShouldReturnNull_WhenDocumentDoesNotExist()
+    {
+        var repository = new CosmosProductRepository(new FakeCosmosProductDataStore(), new CosmosDbOptions
+        {
+            DatabaseName = "netaspire",
+            ContainerName = "products"
+        });
+
+        var product = await repository.GetByIdAsync(Guid.NewGuid());
+
+        Assert.Null(product);
     }
 }

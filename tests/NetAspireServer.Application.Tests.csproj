@@ -5,17 +5,25 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.5" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="CosmosDbOptionsTests.cs" />
+    <Compile Include="CosmosProductRepositoryTests.cs" />
+    <Compile Include="ApiEndpointsTests.cs" />
+    <Compile Include="InMemoryProductRepositoryTests.cs" />
+    <Compile Include="ProductServiceTests.cs" />
     <ProjectReference Include="..\\src\\Application\\NetAspireServer.Application.csproj" />
+    <ProjectReference Include="..\\src\\Api\\NetAspireServer.Api.csproj" />
     <ProjectReference Include="..\\src\\Domain\\NetAspireServer.Domain.csproj" />
     <ProjectReference Include="..\\src\\Infrastructure\\NetAspireServer.Infrastructure.csproj" />
   </ItemGroup>

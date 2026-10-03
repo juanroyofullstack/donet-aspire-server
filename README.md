@@ -31,7 +31,7 @@ The API will be available at:
 docker compose up -d cosmos
 ```
 
-This starts the local Azure Cosmos emulator used by the integration tests. The integration suite connects to https://localhost:8081 and will skip automatically when the emulator is not running.
+This starts the local Azure Cosmos emulator used by the integration tests. Local runs do not require the emulator, but CI sets `REQUIRE_COSMOS_EMULATOR=true` and fails if it cannot be reached.
 
 ## Run the test suites
 

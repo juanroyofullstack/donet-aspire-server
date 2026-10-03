@@ -56,7 +56,7 @@ The `Infrastructure` project provides the concrete repository implementations an
 
 - `CosmosDbOptions` binds the `CosmosDb` configuration section and exposes whether the remaining Cosmos names are present.
 - `CosmosProductRepository` uses `Microsoft.Azure.Cosmos` to store and read products, but now receives `CosmosClient` from dependency injection instead of creating its own client.
-- `InMemoryProductRepository` stores products in a local list for development or when Cosmos is not configured.
+- `InMemoryProductRepository` stores products in memory for development or when Cosmos is not configured. Its singleton state is synchronized and read operations return snapshots.
 
 The API selects the repository implementation at startup based on both `CosmosDbOptions.IsConfigured` and whether a `CosmosClient` has been registered.
 
@@ -79,6 +79,7 @@ Important details:
 - The repository uses the DI-provided `CosmosClient`, which is registered by the API when the `cosmos` connection string is supplied through Aspire.
 - Products are stored as an internal document shape and mapped back into domain entities on read.
 - `GetAllAsync` queries all items from the container and materializes them as `Product` instances.
+- `GetByIdAsync` reads a product by its identifier and partition key, allowing the API to expose a resolvable resource URL after creation.
 
 ## Aspire Host
 

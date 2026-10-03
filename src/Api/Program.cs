@@ -14,7 +14,18 @@ builder.Services.AddSwaggerGen();
 
 if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("cosmos")))
 {
-    builder.AddAzureCosmosClient("cosmos");
+    var acceptUntrustedEmulatorCertificate = builder.Configuration.GetValue<bool>("CosmosDb:AcceptUntrustedEmulatorCertificate");
+    builder.AddAzureCosmosClient("cosmos", configureClientOptions: clientOptions =>
+    {
+        if (acceptUntrustedEmulatorCertificate)
+        {
+            clientOptions.ConnectionMode = ConnectionMode.Gateway;
+            clientOptions.HttpClientFactory = () => new HttpClient(new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            });
+        }
+    });
 }
 
 builder.Services.Configure<CosmosDbOptions>(builder.Configuration.GetSection("CosmosDb"));
@@ -53,3 +64,6 @@ app.MapProductEndpoints();
 
 app.Run();
 
+public partial class Program
+{
+}

@@ -8,9 +8,13 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://0.0.0.0:8080
-      CosmosDb__ConnectionString: ""
+      ConnectionStrings__cosmos: "AccountEndpoint=https://cosmos:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==;"
       CosmosDb__DatabaseName: "productsdb"
       CosmosDb__ContainerName: "products"
+      CosmosDb__AcceptUntrustedEmulatorCertificate: "true"
+    depends_on:
+      cosmos:
+        condition: service_healthy
 
   cosmos:
     image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest

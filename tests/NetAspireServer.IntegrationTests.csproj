@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="CosmosIntegrationTests.cs" />
     <ProjectReference Include="..\src\Application\NetAspireServer.Application.csproj" />
     <ProjectReference Include="..\src\Domain\NetAspireServer.Domain.csproj" />
     <ProjectReference Include="..\src\Infrastructure\NetAspireServer.Infrastructure.csproj" />

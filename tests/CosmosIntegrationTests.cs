@@ -16,6 +16,12 @@ public class CosmosIntegrationTests
     {
         if (!await IsCosmosEmulatorAvailableAsync())
         {
+            const string message = "The Cosmos DB emulator is not available at https://localhost:8081/.";
+            if (string.Equals(Environment.GetEnvironmentVariable("REQUIRE_COSMOS_EMULATOR"), "true", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException(message);
+            }
+
             return;
         }
 

@@ -72,6 +72,29 @@ public class ProductServiceTests
                 Assert.Equal(29.99m, product.Price);
             });
     }
+
+    [Fact]
+    public async Task GetByIdAsync_ShouldReturnStoredProduct()
+    {
+        var repository = new InMemoryProductRepository();
+        var service = new ProductService(repository);
+        var created = await service.CreateAsync("Laptop", 999.99m);
+
+        var product = await service.GetByIdAsync(created.Id);
+
+        Assert.NotNull(product);
+        Assert.Equal(created.Id, product.Id);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_ShouldReturnNull_WhenProductDoesNotExist()
+    {
+        var service = new ProductService(new InMemoryProductRepository());
+
+        var product = await service.GetByIdAsync(Guid.NewGuid());
+
+        Assert.Null(product);
+    }
 }
 
 public class InMemoryProductRepositoryTests

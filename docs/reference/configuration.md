@@ -33,7 +33,7 @@ Required values:
 
 `CosmosDbOptions.IsConfigured` returns `true` only when `DatabaseName` and `ContainerName` are present and not blank.
 
-The connection string is no longer read from the `CosmosDb` section. When the API runs through Aspire, AppHost provides the `cosmos` connection automatically via `WithReference`.
+The connection string is read from `ConnectionStrings:cosmos`. When the API runs through Aspire, AppHost provides it automatically via `WithReference`. Docker Compose supplies the same key explicitly for its emulator service.
 
 If the section is missing or incomplete, the Cosmos repository is not used.
 
@@ -84,6 +84,12 @@ The configuration model currently leads to three practical runtime outcomes:
 2. The API runs without Aspire or without the `CosmosDb` names, so it falls back to `InMemoryProductRepository`.
 3. Aspire runs the app locally with unsecured transport enabled and starts the Cosmos emulator alongside the API.
 
+## Docker Compose Configuration
+
+Docker Compose configures `ConnectionStrings__cosmos` with the emulator endpoint and key, plus the database and container names. It waits for the emulator health check before starting the API.
+
+`CosmosDb:AcceptUntrustedEmulatorCertificate` is enabled only in Compose so the development client can communicate with the emulator's self-signed certificate. Do not enable this setting for a real Cosmos account.
+
 ## Integration Test Environment
 
 The repository includes a dedicated integration test project for the real Cosmos flow. It expects the local Azure Cosmos emulator to be running on `https://localhost:8081`.
@@ -94,7 +100,7 @@ To start it locally:
 docker compose up -d cosmos
 ```
 
-The integration test checks for port 8081 before trying to connect. If Docker is unavailable or the emulator is not running, the test is skipped rather than failing the unit suite.
+The integration test checks for port 8081 before trying to connect. Local runs do not require the emulator, while CI sets `REQUIRE_COSMOS_EMULATOR=true`, so an unavailable emulator fails the integration job.
 
 ## Operational Notes
 

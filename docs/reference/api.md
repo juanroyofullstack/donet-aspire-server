@@ -21,7 +21,7 @@ For architectural context, see [architecture.md](architecture.md).
 
 - `src/Api/Program.cs` registers services and invokes endpoint mapping extension methods.
 - `src/Api/Endpoints/SystemEndpoints.cs` contains `GET /` and `GET /health`.
-- `src/Api/Endpoints/ProductEndpoints.cs` contains `GET /products` and `POST /products`.
+- `src/Api/Endpoints/ProductEndpoints.cs` contains `GET /products`, `GET /products/{id}`, and `POST /products`.
 - Product endpoints include OpenAPI metadata (`WithName`, `WithTags`, `WithSummary`, `WithDescription`, `Produces`).
 
 ## Endpoints
@@ -94,6 +94,7 @@ Request model:
 Behavior:
 
 - The endpoint binds the request to `CreateProductRequest`.
+- Blank names and negative prices return `400 Bad Request` with validation details.
 - `ProductService.CreateAsync(name, price, cancellationToken)` creates the domain entity.
 - The repository persists the entity.
 - The response payload is `ProductResponse`.
@@ -110,6 +111,13 @@ Example response:
 }
 ```
 
+### `GET /products/{id}`
+
+Returns the product identified by `id`.
+
+- Returns `200 OK` with a `ProductResponse` when the product exists.
+- Returns `404 Not Found` when no product has that ID.
+
 ## OpenAPI
 
 OpenAPI support is enabled through `AddOpenApi()` and exposed in development with `MapOpenApi()`.
@@ -121,9 +129,7 @@ OpenAPI support is enabled through `AddOpenApi()` and exposed in development wit
 
 The current API does not define custom error response types in `Program.cs`.
 
-Relevant failures can still occur from the domain and infrastructure layers:
-
-- Invalid product data can trigger exceptions from `Product`.
+Relevant failures can still occur from the infrastructure layer. Invalid product data is handled at the HTTP boundary and returns a validation response.
 - Missing Cosmos configuration causes the app to use the in-memory repository instead of failing startup.
 
 ## Related Files

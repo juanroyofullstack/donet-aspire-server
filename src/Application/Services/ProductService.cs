@@ -22,4 +22,9 @@ public class ProductService
     {
         return await _productRepository.GetAllAsync(cancellationToken);
     }
+
+    public async Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await _productRepository.GetByIdAsync(id, cancellationToken);
+    }
 }

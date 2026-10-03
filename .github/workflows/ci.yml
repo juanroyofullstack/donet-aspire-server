@@ -85,7 +85,7 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Start Cosmos emulator
-        run: docker compose up -d cosmos
+        run: docker compose up -d --wait cosmos
 
       - name: Run integration tests
         run: |
@@ -93,4 +93,5 @@ jobs:
           dotnet test tests/NetAspireServer.IntegrationTests.csproj \
             --configuration Release \
             --no-restore \
+            --environment REQUIRE_COSMOS_EMULATOR=true \
             --logger "console;verbosity=minimal"
