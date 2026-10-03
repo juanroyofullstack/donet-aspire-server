@@ -7,6 +7,7 @@ This folder contains the living documentation for the repository. The goal is to
 - `reference/`: architecture, API, domain, and configuration reference material.
 - `guides/`: architecture and LLM working guidelines.
 - `context/`: compact LLM-oriented summary.
+- `postman/`: Postman collection for exercising the local API.
 
 ## Start Here
 
@@ -16,6 +17,7 @@ This folder contains the living documentation for the repository. The goal is to
 ## Reference Guides
 
 - [API](reference/api.md): endpoint reference, request and response shapes, and examples.
+- [Postman collection](postman/README.md): import and run the API requests in Postman.
 - [Domain](reference/domain.md): entity rules, invariants, and domain concepts.
 - [Configuration](reference/configuration.md): application settings and environment-specific behavior.
 - [Architecture Guidelines](guides/architecture-guidelines.md): rules for structuring code and keeping the architecture clean.
